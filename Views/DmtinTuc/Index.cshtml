@@ -1,0 +1,74 @@
+﻿@model IEnumerable<TT.Models.DMTinTuc>
+
+@{
+    ViewData["Title"] = "Danh mục tin tức";
+}
+
+<div class="pagetitle">
+    <h1>Tin tức</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href=""></a></li>
+            <li class="breadcrumb-item active">Danh mục tin tức</li>
+        </ol>
+    </nav>
+</div>
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-12">
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="top-row">
+                        <div class="row" id="search">
+                            <input type="hidden" name="page" id="page" onchange="loaddata()" />
+                            <input type="hidden" name="pagesize" id="pagesize" onchange="loaddata()" />
+                            <div class="search-container d-flex align-items-center gap-2">
+                                <label for="keysearch">Tìm kiếm:</label>
+                                <input type="text" name="keysearch" id="keysearch" placeholder="Nhập từ khóa tìm kiếm" onchange="loaddata()">
+                            </div>
+                            <div class="search-container d-flex align-items-center gap-2">
+                                <label for="idsearch">Danh mục:</label>
+                                <select class="select2DM" id="idsearch" name="idsearch" style="width: 100%" onchange = "loaddata()"></select>
+
+                                @*@Html.DropDownList("idsearch", lstparent, "Chọn danh mục cha", new { @class = "form-control select2", @onchange = "loaddata()" })*@
+                            </div>
+                        </div>
+
+                        <div class="add-category-button">
+                            <a href="@Url.Action("Create", "DmtinTuc")"
+                               class="btn btn-outline-primary fa fa-plus"
+                               data-ajax="true"
+                               data-ajax-mode="replace"
+                               data-ajax-update="#target-div"
+                               data-ajax-method="GET"
+                               data-ajax-begin="BlockUI();"
+                               data-ajax-complete="LoadModelSussess()"
+                               data-ajax-failure="UnBlockUI();"
+                               title="Thêm danh mục">
+                            </a>
+                        </div>
+                    </div>
+
+                    <div id="listdata">
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+<div id="target-div">
+</div>
+
+@section Scripts {
+    <script src="~/App/AppJs/DmtinTuc.js"></script>
+    <script src="~/App/js/select2.js"></script>
+}
+
+
+
+
+

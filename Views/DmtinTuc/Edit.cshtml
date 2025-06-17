@@ -1,0 +1,85 @@
+﻿@using TT.Models
+@model DMTinTuc
+<div class="modal" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Thêm</h4>
+                <button type="button" class="close btn bg-transparent border-0" data-bs-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <form action="@Url.Action("Edit", "DMTinTuc", new { area = "Hieu" })"
+                      class="form-horizontal"
+                      data-ajax="true"
+                      data-ajax-begin="BlockUI()"
+                      data-ajax-failure="UnBlockUI()"
+                      data-ajax-method="POST"
+                      data-ajax-success="successAction"
+                      id="basicForm"
+                      method="post">
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label for="Ten" class="control-label">Tiêu đề</label>
+                        <input name="Ten" id="Ten" class="form-control" value="@(Model.Ten)" />
+                    </div>
+                    <div class="form-group">
+                        <label for="MoTa" class="control-label">Tiêu đề</label>
+                        <input name="MoTa" id="MoTa" class="form-control" value="@(Model.MoTa)" />
+                    </div>
+                    <div class="form-group">
+                        <label for="ParentId" class="control-label mb-2"> Danh mục cha</label><br />
+                        <select class="select2DM form-control" id="ParentId" name="ParentId" style="width: 100%">
+                        @if (Model.ParentId > 0 && Model.ParentId != null)
+                        {
+                                <option value="@Model.ParentId" selected>@Model.TenDmCha</option>
+                        }
+                        </select>
+
+                    </div>
+                    <div class="form-group form-check mt-2">
+                        <label class="form-check-label">
+                            <input class="form-check-input" type="checkbox" name="Status" id="Status" value="true" @(Model.Status ? " Checked" : "") /> Trạng thái
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Edit" class="btn btn-primary" />
+                    </div>
+                </form>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="btnclosemodel" data-bs-dismiss="modal">Close</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script src="~/App/js/select2.js"></script>
+<script src="~/App/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script>
+    $("#basicForm").validate({
+        rules: {
+            Ten: {
+                required: true,
+            }
+        },
+        messages: {
+            Ten: {
+                required: "Vui lòng nhập tên danh mục tin tức",
+            }
+        }
+    });
+</script>
+
+
+
+
+
+

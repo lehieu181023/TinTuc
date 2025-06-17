@@ -1,0 +1,89 @@
+﻿@using TT.Models
+@model TT.Models.TinTuc
+<div class="modal" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Thêm</h4>
+                <button type="button" class="close btn bg-transparent border-0" data-bs-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <form action="@Url.Action("Create", "TinTuc", new { area = "Hieu" })"
+                      class="form-horizontal"
+                      data-ajax="true"
+                      data-ajax-begin="BlockUI()"
+                      data-ajax-failure="UnBlockUI()"
+                      data-ajax-method="POST"
+                      data-ajax-success="successAction"
+                      id="basicForm"
+                      method="post">
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <div class="form-group">
+                        <label for="TieuDe" class="control-label">Tiêu đề</label>
+                        <input name="TieuDe" id="TieuDe" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="TrichNgan" class="control-label">Trích ngắn</label>
+                        <input name="TrichNgan" id="TrichNgan" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="ChiTiet" class="control-label">Chi tiết</label>
+                        <textarea name="ChiTiet" id="ChiTiet" class="form-control"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="lstIdDm" class="control-label mb-2"> Danh mục</label><br />
+                        <select class="select2DM form-control" id="lstIdDm" multiple="multiple" name="lstIdDm"></select>
+
+                        @*@Html.ListBoxFor(model => model.lstIdDm, lstparent, new { @class = "form-control select2" })*@
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="Status" class="control-label mb-1">Trạng thái</label>
+                        @Html.DropDownListFor(model => model.Status, EnumDmTT.GetSelectList(), new { @class = "form-control select2zz" })
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Create" class="btn btn-primary" />
+                    </div>
+                </form>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="btnclosemodel" data-bs-dismiss="modal">Close</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script src="~/App/js/select2.js"></script>
+<script src="~/App/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script>
+    $("#basicForm").validate({
+        rules: {
+            TieuDe: {
+                required: true,
+            },
+            Status: {
+                required: true
+            }
+
+        },
+        messages: {
+            TieuDe: {
+                required: "Vui lòng nhập tiêu đề tin tức"
+            },
+            Status: {
+                required: "Vui lòng chọn trạng thái"
+            }
+        }
+    });
+</script>
+
+
+
+
+

@@ -1,0 +1,159 @@
+﻿@using TT.Models
+@model List<TinTuc>
+@{
+    var total = ViewBag.total;
+    var totalpage = ViewBag.totalPage;
+    var stt = ViewBag.stt;
+    var curentpage = ViewBag.curentpage;
+    var curentpagesize = ViewBag.curentpagesize;
+}
+<script>
+    $('#tongbanghi').val('@total');
+</script>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Tiêu đề
+            </th>
+            <th>
+                Trích ngắn
+            </th>
+            <th>
+                Chi tiết
+            </th>
+            <th>
+                Danh mục
+            </th>
+            <th>
+                Ngày tạo
+            </th>
+            <th>
+                Trạng thái
+            </th>
+            <th>
+                Thao tác
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TieuDe)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TrichNgan)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ChiTiet)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TenDm)
+                </td>
+                <td>
+                    @(item.CreateDate.ToString("dd/MM/yyyy"))
+                </td>
+                <td>
+                    @(EnumDmTT.GetName(item.Status))
+                </td>
+                <td>
+                    <a href="@Url.Action("Edit", "TinTuc", new { area = "Hieu", id = item.Id })"
+                       class="btn btn-outline-primary fa-solid fa-pen-to-square"
+                       data-ajax="true"
+                       data-ajax-mode="replace"
+                       data-ajax-update="#target-div"
+                       data-ajax-method="GET"
+                       data-ajax-begin="BlockUI();"
+                       data-ajax-complete="LoadModelSussess()"
+                       data-ajax-failure="UnBlockUI();"
+                       title="Sửa">
+                    </a>
+
+                    <a class="btn btn-outline-primary fa-solid fa-trash" onclick="deleteData(@item.Id)" title="Xóa"></a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div class="bottom-row">
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+            Tổng số bản ghi: @(total)
+        </div>
+        <div class="d-flex align-items-center">
+            <div class="d-flex align-items-center" style="margin-right:10px">
+                <label for="pageSizer" style="width: 100%;white-space: nowrap;margin-right:2px">Số mục mỗi trang:</label>
+                <select id="pageSizer" class="form-control" onchange="$('#pagesize').val(this.value); loaddata();">
+                    @for (int i = 10; i <= 160; i = i * 2)
+                    {
+                        if (curentpagesize == i)
+                        {
+                            <option value="@(i)" selected>@(i)</option>
+                        }
+                        else
+                        {
+                            <option value="@(i)">@(i)</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <div class="pagination-container align-items-center">
+                <nav aria-label="Page navigation" style="margin-top:17px">
+                    <ul class="pagination">
+                        <li class="page-item">
+                            <a class="page-link" href="#" aria-label="Previous" onclick="$('#page').val(1); loaddata();">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+
+                        @if (totalpage <= 5)
+                        {
+                            for (int i = 1; i <= totalpage; i++)
+                            {
+                                <li class="page-item @(i == curentpage ? "active" : "")">
+                                    <a class="page-link" href="#" onclick="$('#page').val(@i); loaddata();">@i</a>
+                                </li>
+                            }
+                        }
+                        else
+                        {
+                            int start = 1;
+                            int end = 5;
+
+                            if (curentpage > 3 && curentpage < totalpage - 2)
+                            {
+                                start = (int)curentpage - 2;
+                                end = (int)curentpage + 2;
+                            }
+                            else if (curentpage >= totalpage - 2)
+                            {
+                                start = Math.Max(1, (int)(totalpage - 4));
+                                end = (int)totalpage;
+                            }
+
+                            for (int i = start; i <= end; i++)
+                            {
+                                if (i >= 1 && i <= totalpage)
+                                {
+                                    <li class="page-item @(i == curentpage ? "active" : "")">
+                                        <a class="page-link" href="#" onclick="$('#page').val(@i); loaddata();">@i</a>
+                                    </li>
+                                }
+                            }
+                        }
+
+                        <li class="page-item">
+                            <a class="page-link" href="#" aria-label="Next" onclick="$('#page').val(@totalpage); loaddata();">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+</div>

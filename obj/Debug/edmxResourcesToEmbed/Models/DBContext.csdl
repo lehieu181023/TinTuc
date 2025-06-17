@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="TT.Models" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="DMTinTuc">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Ten" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="MoTa" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="ParentId" Type="Int32" />
+    <Property Name="Cap" Type="Int32" Nullable="false" />
+    <Property Name="CreateDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="Status" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="TinTuc" Relationship="Self.TinTuc_DM" FromRole="DMTinTuc" ToRole="TinTuc" />
+    <Property Name="IdCap1" Type="Int32" />
+    <Property Name="IdCap2" Type="Int32" />
+    <Property Name="IdCap3" Type="Int32" />
+    <Property Name="IdCap4" Type="Int32" />
+    <Property Name="IdCap5" Type="Int32" />
+    <Property Name="IdCap6" Type="Int32" />
+    <Property Name="IdCap7" Type="Int32" />
+    <Property Name="SoLuongTinTuc" Type="Int32" />
+  </EntityType>
+  <EntityType Name="TinTuc">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TieuDe" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="TrichNgan" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="ChiTiet" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="CreateDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="Status" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="DMTinTuc" Relationship="Self.TinTuc_DM" FromRole="TinTuc" ToRole="DMTinTuc" />
+  </EntityType>
+  <Association Name="TinTuc_DM">
+    <End Role="DMTinTuc" Type="Self.DMTinTuc" Multiplicity="*" />
+    <End Role="TinTuc" Type="Self.TinTuc" Multiplicity="*" />
+  </Association>
+  <EntityContainer Name="DBContext" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="DMTinTuc" EntityType="Self.DMTinTuc" />
+    <EntitySet Name="TinTuc" EntityType="Self.TinTuc" />
+    <AssociationSet Name="TinTuc_DM" Association="Self.TinTuc_DM">
+      <End Role="DMTinTuc" EntitySet="DMTinTuc" />
+      <End Role="TinTuc" EntitySet="TinTuc" />
+    </AssociationSet>
+    <FunctionImport Name="sp_GanRandomDMTinTuc_SetBased">
+      <Parameter Name="StartId" Mode="In" Type="Int32" />
+      <Parameter Name="EndId" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="sp_InsertFakeTinTuc">
+      <Parameter Name="SoLuong" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="sp_TaoDMDaCap">
+      <Parameter Name="SoCap" Mode="In" Type="Int32" />
+      <Parameter Name="SoLuongMoiCap" Mode="In" Type="Int32" />
+    </FunctionImport>
+  </EntityContainer>
+</Schema>

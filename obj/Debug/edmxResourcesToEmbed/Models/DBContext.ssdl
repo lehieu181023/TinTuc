@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="TT.Models.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="DMTinTuc">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Ten" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="MoTa" Type="nvarchar(max)" />
+    <Property Name="ParentId" Type="int" />
+    <Property Name="Cap" Type="int" Nullable="false" />
+    <Property Name="CreateDate" Type="datetime" Nullable="false" />
+    <Property Name="Status" Type="bit" Nullable="false" />
+    <Property Name="IdCap1" Type="int" />
+    <Property Name="IdCap2" Type="int" />
+    <Property Name="IdCap3" Type="int" />
+    <Property Name="IdCap4" Type="int" />
+    <Property Name="IdCap5" Type="int" />
+    <Property Name="IdCap6" Type="int" />
+    <Property Name="IdCap7" Type="int" />
+    <Property Name="SoLuongTinTuc" Type="int" />
+  </EntityType>
+  <EntityType Name="TinTuc">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="TieuDe" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="TrichNgan" Type="nvarchar(max)" />
+    <Property Name="ChiTiet" Type="nvarchar(max)" />
+    <Property Name="CreateDate" Type="datetime" Nullable="false" />
+    <Property Name="Status" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="TinTuc_DM">
+    <Key>
+      <PropertyRef Name="IdTinTuc" />
+      <PropertyRef Name="IdDMTinTuc" />
+    </Key>
+    <Property Name="IdTinTuc" Type="int" Nullable="false" />
+    <Property Name="IdDMTinTuc" Type="int" Nullable="false" />
+  </EntityType>
+  <Association Name="FK_TinTuc_DM_DMTinTuc">
+    <End Role="DMTinTuc" Type="Self.DMTinTuc" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="TinTuc_DM" Type="Self.TinTuc_DM" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="DMTinTuc">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="TinTuc_DM">
+        <PropertyRef Name="IdDMTinTuc" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_TinTuc_DM_TinTuc">
+    <End Role="TinTuc" Type="Self.TinTuc" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="TinTuc_DM" Type="Self.TinTuc_DM" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TinTuc">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="TinTuc_DM">
+        <PropertyRef Name="IdTinTuc" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Function Name="sp_GanRandomDMTinTuc_SetBased" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="StartId" Type="int" Mode="In" />
+    <Parameter Name="EndId" Type="int" Mode="In" />
+  </Function>
+  <Function Name="sp_InsertFakeTinTuc" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="SoLuong" Type="int" Mode="In" />
+  </Function>
+  <Function Name="sp_TaoDMDaCap" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="SoCap" Type="int" Mode="In" />
+    <Parameter Name="SoLuongMoiCap" Type="int" Mode="In" />
+  </Function>
+  <EntityContainer Name="TTModelsStoreContainer">
+    <EntitySet Name="DMTinTuc" EntityType="Self.DMTinTuc" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="TinTuc" EntityType="Self.TinTuc" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="TinTuc_DM" EntityType="Self.TinTuc_DM" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_TinTuc_DM_DMTinTuc" Association="Self.FK_TinTuc_DM_DMTinTuc">
+      <End Role="DMTinTuc" EntitySet="DMTinTuc" />
+      <End Role="TinTuc_DM" EntitySet="TinTuc_DM" />
+    </AssociationSet>
+    <AssociationSet Name="FK_TinTuc_DM_TinTuc" Association="Self.FK_TinTuc_DM_TinTuc">
+      <End Role="TinTuc" EntitySet="TinTuc" />
+      <End Role="TinTuc_DM" EntitySet="TinTuc_DM" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

@@ -1,0 +1,17 @@
+﻿@model List<TT.Models.DMTinTuc>
+
+@if (Model != null || Model?.Count > 0)
+{
+    foreach (var item in Model)
+    {
+        <div class="category-item">
+            <button class="category-toggle" data-category="chinh-tri">
+                <i class="fas fa-chevron-right chevron"></i>
+                <i class="fas fa-landmark icon"></i>
+                Chính trị
+            </button>
+            <div class="category-children" id="DivChild-@item.Id">
+            </div>
+        </div>
+    }
+}

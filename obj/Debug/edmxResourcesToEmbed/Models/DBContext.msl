@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="TTModelsStoreContainer" CdmEntityContainer="DBContext">
+    <EntitySetMapping Name="DMTinTuc">
+      <EntityTypeMapping TypeName="TT.Models.DMTinTuc">
+        <MappingFragment StoreEntitySet="DMTinTuc">
+          <ScalarProperty Name="SoLuongTinTuc" ColumnName="SoLuongTinTuc" />
+          <ScalarProperty Name="IdCap7" ColumnName="IdCap7" />
+          <ScalarProperty Name="IdCap6" ColumnName="IdCap6" />
+          <ScalarProperty Name="IdCap5" ColumnName="IdCap5" />
+          <ScalarProperty Name="IdCap4" ColumnName="IdCap4" />
+          <ScalarProperty Name="IdCap3" ColumnName="IdCap3" />
+          <ScalarProperty Name="IdCap2" ColumnName="IdCap2" />
+          <ScalarProperty Name="IdCap1" ColumnName="IdCap1" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Ten" ColumnName="Ten" />
+          <ScalarProperty Name="MoTa" ColumnName="MoTa" />
+          <ScalarProperty Name="ParentId" ColumnName="ParentId" />
+          <ScalarProperty Name="Cap" ColumnName="Cap" />
+          <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="TinTuc">
+      <EntityTypeMapping TypeName="TT.Models.TinTuc">
+        <MappingFragment StoreEntitySet="TinTuc">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="TieuDe" ColumnName="TieuDe" />
+          <ScalarProperty Name="TrichNgan" ColumnName="TrichNgan" />
+          <ScalarProperty Name="ChiTiet" ColumnName="ChiTiet" />
+          <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <AssociationSetMapping Name="TinTuc_DM" TypeName="TT.Models.TinTuc_DM" StoreEntitySet="TinTuc_DM">
+      <EndProperty Name="DMTinTuc">
+        <ScalarProperty Name="Id" ColumnName="IdDMTinTuc" />
+      </EndProperty>
+      <EndProperty Name="TinTuc">
+        <ScalarProperty Name="Id" ColumnName="IdTinTuc" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <FunctionImportMapping FunctionImportName="sp_GanRandomDMTinTuc_SetBased" FunctionName="TT.Models.Store.sp_GanRandomDMTinTuc_SetBased" />
+    <FunctionImportMapping FunctionImportName="sp_InsertFakeTinTuc" FunctionName="TT.Models.Store.sp_InsertFakeTinTuc" />
+    <FunctionImportMapping FunctionImportName="sp_TaoDMDaCap" FunctionName="TT.Models.Store.sp_TaoDMDaCap" />
+  </EntityContainerMapping>
+</Mapping>

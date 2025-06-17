@@ -1,0 +1,19 @@
+﻿@model List<TT.Models.DMTinTuc>
+
+@if(Model != null && Model?.Count > 0)
+{
+    foreach(var item in Model)
+    {
+        <div class="category-item">
+            <button class="category-toggle" data-category="@(item.Id)" onclick="ClickDM(this)">
+                <i class="@(item.CountChild > 0 ? "fas fa-chevron-right ":"")  chevron"></i>
+                <i class="fa-solid fa-list"></i>
+                @item.Ten - <strong>Số tin tức: @item.SoLuongTinTuc</strong> 
+                
+            </button>
+            <div class="category-children" id="DivChild-@item.Id">
+            </div>
+        </div>
+    }
+}
+

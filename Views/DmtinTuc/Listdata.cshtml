@@ -1,0 +1,150 @@
+﻿@model List<TT.Models.DMTinTuc>
+@{
+    var total = ViewBag.total;
+    var totalpage = ViewBag.totalPage;
+    var stt = ViewBag.stt;
+    var curentpage = ViewBag.curentpage;
+    var curentpagesize = ViewBag.curentpagesize;
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Tên
+            </th>
+            <th>
+                Mô tả
+            </th>
+            <th>
+                Danh mục cha
+            </th>
+            <th>
+                Cấp
+            </th>
+            <th>
+                Số tin tức
+            </th>
+            <th>
+                Thao tác
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Ten)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MoTa)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TenDmCha)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Cap)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SoLuongTinTuc)
+                </td>
+                <td>
+                    <a href="@Url.Action("Edit", "DMTinTuc", new { area = "Hieu", id = item.Id })"
+                       class="btn btn-outline-primary fa-solid fa-pen-to-square"
+                       data-ajax="true"
+                       data-ajax-mode="replace"
+                       data-ajax-update="#target-div"
+                       data-ajax-method="GET"
+                       data-ajax-begin="BlockUI();"
+                       data-ajax-complete="LoadModelSussess()"
+                       data-ajax-failure="UnBlockUI();"
+                       title="Sửa">
+                    </a>
+                    <a class="btn btn-outline-primary fa-solid fa-trash" onclick="deleteData(@item.Id)" title="Xóa"></a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div class="bottom-row">
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+            Tổng số bản ghi: @(total)
+        </div>
+        <div class="d-flex align-items-center">
+            <div class="d-flex align-items-center" style="margin-right:10px">
+                <label for="pageSizer" style="width: 100%;white-space: nowrap;margin-right:2px">Số mục mỗi trang:</label>
+                <select id="pageSizer" class="form-control" onchange="$('#pagesize').val(this.value); loaddata();">
+                    @for (int i = 10; i <= 160; i = i * 2)
+                    {
+                        if (curentpagesize == i)
+                        {
+                            <option value="@(i)" selected>@(i)</option>
+                        }
+                        else
+                        {
+                            <option value="@(i)">@(i)</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <div class="pagination-container align-items-center">
+                <nav aria-label="Page navigation" style="margin-top:17px">
+                    <ul class="pagination">
+                        <li class="page-item">
+                            <a class="page-link" href="#" aria-label="Previous" onclick="$('#page').val(1); loaddata();">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+
+                        @if (totalpage <= 5)
+                        {
+                            for (int i = 1; i <= totalpage; i++)
+                            {
+                                <li class="page-item @(i == curentpage ? "active" : "")">
+                                    <a class="page-link" href="#" onclick="$('#page').val(@i); loaddata();">@i</a>
+                                </li>
+                            }
+                        }
+                        else
+                        {
+                            int start = 1;
+                            int end = 5;
+
+                            if (curentpage > 3 && curentpage < totalpage - 2)
+                            {
+                                start = curentpage - 2;
+                                end = curentpage + 2;
+                            }
+                            else if (curentpage >= totalpage - 2)
+                            {
+                                start = Math.Max(1, (int)(totalpage - 4));
+                                end = (int)totalpage;
+                            }
+
+                            for (int i = start; i <= end; i++)
+                            {
+                                if (i >= 1 && i <= totalpage)
+                                {
+                                    <li class="page-item @(i == curentpage ? "active" : "")">
+                                        <a class="page-link" href="#" onclick="$('#page').val(@i); loaddata();">@i</a>
+                                    </li>
+                                }
+                            }
+                        }
+
+                        <li class="page-item">
+                            <a class="page-link" href="#" aria-label="Next" onclick="$('#page').val(@totalpage); loaddata();">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+
+        </div>
+    </div>
+
+</div>

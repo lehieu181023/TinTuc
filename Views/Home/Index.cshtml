@@ -1,0 +1,120 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tin Tức - Danh Mục</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="~/App/css/test.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link href="~/App/react/assets/index-GNLSjkBZ.css" rel="stylesheet" />
+    <style>
+        #blockUI {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7); /* Nền đen mờ */
+            display: none; /* Ẩn mặc định */
+            align-items: center;
+            justify-content: center;
+            z-index: 20000; /* Cao hơn modal */
+            pointer-events: auto; /* Chặn mọi tương tác */
+        }
+        .circle {
+            width: 5px;
+            height: 5px;
+            background-color: #0d6efd; /* màu xanh Bootstrap */
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <!-- Màn hình Block UI -->
+    <div id="blockUI">
+        <div class="text-center bg-white p-4 rounded shadow">
+            <div class="spinner-border text-primary" role="status"></div>
+            <p class="mt-2 fw-bold">Loading...</p>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row main-container">
+            <!-- Sidebar danh mục - Bên phải -->
+            <div class="col-lg-4 col-md-5">
+                <div class="sidebar">
+                    <div class="sidebar-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-list-ul mr-2"></i>
+                            Danh Mục Tin Tức
+                        </h5>
+                        <input type="hidden" name="indexdm" id="indexdm" value="0" />
+                        <input type="text" id="searchDm" class="form-control mt-2" placeholder="Tìm kiếm danh mục..." onchange="closeAll(); LoadDanhMuc(this.value, true); $('#IdDm').val(''); LoadTinTuc();">
+                        <input type="button" value="Hủy chọn" class="btn btn-info mt-2" onclick="closeAll(); $('#IdDm').val('');LoadTinTuc();" />
+                    </div>
+                    <div class="category-tree" id="listDanhMuc" style="max-height:850px; overflow-y:auto; overflow-x:hidden">
+                    </div>
+                </div>
+            </div>
+            <!-- Khu vực hiển thị tin tức - Bên trái -->
+            <div class="col-lg-8 col-md-7">
+                <div class="news-content">
+                    <!-- Breadcrumb -->
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item active">Tất cả tin tức</li>
+                        </ol>
+                        
+                    </nav>
+
+                    <!-- Tìm kiếm -->
+                    <div class="search-box">
+                        <div class="input-group" id="search">
+                            <input type="hidden" name="page" id="page" />
+                            <input type="hidden" name="pagesize" id="pagesize" />
+                            <input type="hidden" name="IdDm" id="IdDm" />
+                            <input type="text" name="keysearch" id="keysearch" class="form-control search-input" placeholder="Tìm kiếm tin tức..." onchange="LoadTinTuc()">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button" onclick="LoadTinTuc()">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                                <a class="btn btn-info" href="/TinTuc">Trang quản lý</a>
+                                <button id="btnTaoDuLieu" class="btn btn-info">Tạo dữ liệu</button>
+                                <a class="btn btn-info" href="/hangfire">Tiến trình tạo dữ liệu</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Danh sách tin tức -->
+                    <div id="lstTinTuc">
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+    <script src="~/App/react/assets/index-CmBJohSG.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ajax-unobtrusive/3.2.6/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/App/js/common.js"></script>
+    <script src="~/App/AppJs/Home.js"></script>
+</body>
+</html>
