@@ -7,27 +7,27 @@
       "RelativeMoniker": "D:0:0:{2479E3A5-43CE-49C8-8B50-F11C60C1F351}|TT.csproj|solutionrelative:controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{2479E3A5-43CE-49C8-8B50-F11C60C1F351}|TT.csproj|d:\\asp.net core\\duantt\\tt\\controllers\\dmtintuccontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{2479E3A5-43CE-49C8-8B50-F11C60C1F351}|TT.csproj|D:\\ASP.NET Core\\DuAnTT\\TT\\controllers\\dmtintuccontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{2479E3A5-43CE-49C8-8B50-F11C60C1F351}|TT.csproj|solutionrelative:controllers\\dmtintuccontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{2479E3A5-43CE-49C8-8B50-F11C60C1F351}|TT.csproj|d:\\asp.net core\\duantt\\tt\\controllers\\tintuccontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{2479E3A5-43CE-49C8-8B50-F11C60C1F351}|TT.csproj|D:\\ASP.NET Core\\DuAnTT\\TT\\controllers\\tintuccontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{2479E3A5-43CE-49C8-8B50-F11C60C1F351}|TT.csproj|solutionrelative:controllers\\tintuccontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{2479E3A5-43CE-49C8-8B50-F11C60C1F351}|TT.csproj|d:\\asp.net core\\duantt\\tt\\views\\dmtintuc\\listdata.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{2479E3A5-43CE-49C8-8B50-F11C60C1F351}|TT.csproj|D:\\ASP.NET Core\\DuAnTT\\TT\\views\\dmtintuc\\listdata.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{2479E3A5-43CE-49C8-8B50-F11C60C1F351}|TT.csproj|solutionrelative:views\\dmtintuc\\listdata.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{2479E3A5-43CE-49C8-8B50-F11C60C1F351}|TT.csproj|d:\\asp.net core\\duantt\\tt\\models\\modelcustom.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{2479E3A5-43CE-49C8-8B50-F11C60C1F351}|TT.csproj|D:\\ASP.NET Core\\DuAnTT\\TT\\models\\modelcustom.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{2479E3A5-43CE-49C8-8B50-F11C60C1F351}|TT.csproj|solutionrelative:models\\modelcustom.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{2479E3A5-43CE-49C8-8B50-F11C60C1F351}|TT.csproj|d:\\asp.net core\\duantt\\tt\\views\\home\\listdatatintuc.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{2479E3A5-43CE-49C8-8B50-F11C60C1F351}|TT.csproj|D:\\ASP.NET Core\\DuAnTT\\TT\\views\\home\\listdatatintuc.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{2479E3A5-43CE-49C8-8B50-F11C60C1F351}|TT.csproj|solutionrelative:views\\home\\listdatatintuc.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{2479E3A5-43CE-49C8-8B50-F11C60C1F351}|TT.csproj|d:\\asp.net core\\duantt\\tt\\views\\home\\listdm.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{2479E3A5-43CE-49C8-8B50-F11C60C1F351}|TT.csproj|D:\\ASP.NET Core\\DuAnTT\\TT\\views\\home\\listdm.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{2479E3A5-43CE-49C8-8B50-F11C60C1F351}|TT.csproj|solutionrelative:views\\home\\listdm.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     }
   ],
@@ -62,8 +62,7 @@
               "RelativeToolTip": "Views\\DmtinTuc\\Listdata.cshtml",
               "ViewState": "AgIAABgAAAAAAAAAAAAAADEAAABEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-06-17T18:40:51.099Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-17T18:40:51.099Z"
             },
             {
               "$type": "Document",
@@ -75,8 +74,7 @@
               "RelativeToolTip": "Controllers\\DmtinTucController.cs",
               "ViewState": "AgIAAJMAAAAAAAAAAAAgwKUAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-17T18:32:55.139Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-17T18:32:55.139Z"
             },
             {
               "$type": "Document",
@@ -101,8 +99,7 @@
               "RelativeToolTip": "Views\\Home\\ListDm.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAABDAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-06-17T18:29:42.36Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-17T18:29:42.36Z"
             },
             {
               "$type": "Document",
@@ -114,8 +111,7 @@
               "RelativeToolTip": "Views\\Home\\ListdataTinTuc.cshtml",
               "ViewState": "AgIAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-06-17T18:29:40.215Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-17T18:29:40.215Z"
             },
             {
               "$type": "Document",
@@ -127,8 +123,7 @@
               "RelativeToolTip": "Models\\ModelCustom.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-17T18:29:25.258Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-17T18:29:25.258Z"
             },
             {
               "$type": "Document",
@@ -140,8 +135,7 @@
               "RelativeToolTip": "Controllers\\TinTucController.cs",
               "ViewState": "AgIAAJ0AAAAAAAAAAAAmwNoAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-17T18:11:58.103Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-17T18:11:58.103Z"
             }
           ]
         }
