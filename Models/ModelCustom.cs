@@ -5,6 +5,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TT.Models
 {
+    public class GenerationProgress
+    {
+        public string SessionId { get; set; }
+        public int TotalItems { get; set; }
+        public int ProcessedItems { get; set; }
+        public bool IsCompleted { get; set; }
+        public DateTime StartTime { get; set; }
+        public string Message { get; set; }
+    }
     public partial class  DMTinTuc
     {
         public string TenDmCha;
