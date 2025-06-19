@@ -1,6 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
 using System.Data.Entity;
+using System.Data.Entity.Core.Common.CommandTrees;
+using System.Data.Entity.Infrastructure;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading;
@@ -117,142 +122,158 @@ namespace TT.Controllers
 
         private async Task GenerateCategoriesAsync(int count, string sessionId)
         {
-            const int batchSize = 1000; // Xử lý theo batch để tối ưu
+            const int batchSize = 100;
             var progress = _progressTracker[sessionId];
 
             try
             {
                 using (var context = new DBContext())
                 {
-                    // Tắt AutoDetectChanges để tăng hiệu suất
                     context.Configuration.AutoDetectChangesEnabled = false;
                     context.Configuration.ValidateOnSaveEnabled = false;
 
                     var categories = new List<DMTinTuc>();
                     var random = new Random();
 
-                    // Tạo danh mục cấp 1 trước
-                    var level1Count = Math.Min(count / 10, 1000); // Tối đa 1000 danh mục cấp 1
-                    progress.Message = "Đang tạo danh mục cấp 1...";
+                    // Phân bổ số lượng
+                    int level1Count = (int)(count * 0.1);                // Cấp 1: 10%
+                    int remainingCount = count - level1Count;            // Còn lại: 90%
+                    int perLevel = remainingCount / 7;                   // Cấp 2 đến 8
+                    int distributed = 0;
 
-                    for (int i = 0; i < level1Count; i++)
+                    var levelCategories = new Dictionary<int, List<DMTinTuc>>();
+
+                    for (int level = 1; level <= 8; level++)
                     {
-                        var category = new DMTinTuc
+                        int itemsToCreate = level == 1 ? level1Count : perLevel;
+                        if (level == 8) // Dồn phần dư vào cấp 8
                         {
-                            Ten = $"Danh mục cấp 1 - {i + 1:D6}",
-                            MoTa = $"Mô tả danh mục cấp 1 số {i + 1}",
-                            Cap = 1,
-                            CreateDate = DateTime.Now.AddDays(-random.Next(365)),
-                            Status = true
-                        };
-                        categories.Add(category);
+                            itemsToCreate = count - progress.ProcessedItems;
+                        }
 
-                        if (categories.Count >= batchSize)
+                        progress.Message = $"Đang tạo danh mục cấp {level} ({itemsToCreate} danh mục)...";
+                        var currentLevelList = new List<DMTinTuc>();
+
+                        for (int i = 0; i < itemsToCreate; i++)
+                        {
+                            DMTinTuc parent = null;
+                            int? parentId = null;
+                            int? idCap1 = null, idCap2 = null, idCap3 = null, idCap4 = null, idCap5 = null, idCap6 = null, idCap7 = null;
+
+                            if (level > 1)
+                            {
+                                var parentList = levelCategories[level - 1];
+                                parent = parentList[random.Next(parentList.Count)];
+                                parentId = parent.Id;
+
+                                // Sao chép IdCap từ cha
+                                idCap1 = parent.IdCap1;
+                                idCap2 = parent.IdCap2;
+                                idCap3 = parent.IdCap3;
+                                idCap4 = parent.IdCap4;
+                                idCap5 = parent.IdCap5;
+                                idCap6 = parent.IdCap6;
+                                idCap7 = parent.IdCap7;
+
+                                // Gán IdCapN tương ứng cấp hiện tại
+                                switch (level - 1)
+                                {
+                                    case 1: idCap1 = parent.Id; break;
+                                    case 2: idCap2 = parent.Id; break;
+                                    case 3: idCap3 = parent.Id; break;
+                                    case 4: idCap4 = parent.Id; break;
+                                    case 5: idCap5 = parent.Id; break;
+                                    case 6: idCap6 = parent.Id; break;
+                                    case 7: idCap7 = parent.Id; break;
+                                }
+                            }
+
+                            var category = new DMTinTuc
+                            {
+                                Ten = $"Danh mục cấp {level} - {i + 1:D6}",
+                                MoTa = $"Mô tả danh mục cấp {level} số {i + 1}",
+                                Cap = level,
+                                ParentId = parentId,
+                                IdCap1 = idCap1,
+                                IdCap2 = idCap2,
+                                IdCap3 = idCap3,
+                                IdCap4 = idCap4,
+                                IdCap5 = idCap5,
+                                IdCap6 = idCap6,
+                                IdCap7 = idCap7,
+                                CreateDate = DateTime.Now.AddDays(-random.Next(365)),
+                                Status = true
+                            };
+
+                            categories.Add(category);
+                            currentLevelList.Add(category);
+
+                            if (categories.Count >= batchSize)
+                            {
+                                context.DMTinTuc.AddRange(categories);
+                                await context.SaveChangesAsync();
+
+                                progress.ProcessedItems += categories.Count;
+                                categories.Clear();
+                            }
+                        }
+
+                        // Lưu batch cuối cùng
+                        if (categories.Any())
                         {
                             context.DMTinTuc.AddRange(categories);
                             await context.SaveChangesAsync();
-
                             progress.ProcessedItems += categories.Count;
                             categories.Clear();
                         }
-                    }
 
-                    // Lưu batch cuối cùng của cấp 1
-                    if (categories.Any())
-                    {
-                        context.DMTinTuc.AddRange(categories);
-                        await context.SaveChangesAsync();
-                        progress.ProcessedItems += categories.Count;
-                        categories.Clear();
-                    }
-
-                    // Lấy danh sách ID danh mục cấp 1 vừa tạo
-                    var level1Ids = await context.DMTinTuc
-                        .Where(x => x.Cap == 1)
-                        .OrderByDescending(x => x.Id)
-                        .Take(level1Count)
-                        .Select(x => new { x.Id, x.Ten })
-                        .ToListAsync();
-
-                    // Tạo danh mục con
-                    var remainingCount = count - progress.ProcessedItems;
-                    progress.Message = "Đang tạo danh mục con...";
-
-                    for (int i = 0; i < remainingCount; i++)
-                    {
-                        var parentIndex = random.Next(level1Ids.Count);
-                        var parent = level1Ids[parentIndex];
-
-                        var category = new DMTinTuc
-                        {
-                            Ten = $"Danh mục con - {parent.Ten} - {i + 1:D6}",
-                            MoTa = $"Mô tả danh mục con số {i + 1}",
-                            ParentId = parent.Id,
-                            Cap = 2,
-                            IdCap1 = parent.Id,
-                            CreateDate = DateTime.Now.AddDays(-random.Next(365)),
-                            Status = true
-                        };
-                        categories.Add(category);
-
-                        if (categories.Count >= batchSize)
-                        {
-                            context.DMTinTuc.AddRange(categories);
-                            await context.SaveChangesAsync();
-
-                            progress.ProcessedItems += categories.Count;
-                            categories.Clear();
-                        }
-                    }
-
-                    // Lưu batch cuối cùng
-                    if (categories.Any())
-                    {
-                        context.DMTinTuc.AddRange(categories);
-                        await context.SaveChangesAsync();
-                        progress.ProcessedItems += categories.Count;
+                        levelCategories[level] = currentLevelList;
                     }
 
                     progress.IsCompleted = true;
-                    progress.Message = $"Hoàn thành! Đã tạo {progress.ProcessedItems} danh mục.";
+                    progress.Message = $"✅ Hoàn thành! Đã tạo {progress.ProcessedItems} danh mục từ cấp 1 đến 8.";
                 }
+            }
+            catch (DbUpdateException ex)
+            {
+                progress.Message = $"❌ Lỗi DB: {ex.InnerException?.InnerException?.Message}";
+                progress.IsCompleted = true;
             }
             catch (Exception ex)
             {
-                progress.Message = $"Lỗi: {ex.Message}";
+                progress.Message = $"❌ Lỗi: {ex.Message}";
                 progress.IsCompleted = true;
             }
         }
 
         private async Task GenerateNewsAsync(int count, string sessionId)
         {
-            const int batchSize = 5000; // Batch lớn hơn cho tin tức
+            const int batchSize = 5000;
             var progress = _progressTracker[sessionId];
 
             try
             {
                 using (var context = new DBContext())
+                using (var connection = new SqlConnection(context.Database.Connection.ConnectionString))
                 {
-                    // Tắt AutoDetectChanges để tăng hiệu suất
+                    await connection.OpenAsync();
+
                     context.Configuration.AutoDetectChangesEnabled = false;
                     context.Configuration.ValidateOnSaveEnabled = false;
 
-                    // Lấy danh sách ID danh mục có sẵn
-                    progress.Message = "Đang tải danh sách danh mục...";
-                    var categoryIds = await context.DMTinTuc
-                        .Select(x => x.Id)
-                        .ToListAsync();
-
+                    var categoryIds = await context.DMTinTuc.Select(x => x.Id).ToListAsync();
                     if (!categoryIds.Any())
                     {
-                        progress.Message = "Không có danh mục nào để gán cho tin tức!";
+                        progress.Message = "Không có danh mục nào để gán!";
                         progress.IsCompleted = true;
                         return;
                     }
 
                     var random = new Random();
                     var newsList = new List<TinTuc>();
-                    var newsCategories = new List<string>(); // Để bulk insert vào bảng nhiều-nhiều
+                    var dtTinTucDm = new DataTable();
+                    dtTinTucDm.Columns.Add("IdTinTuc", typeof(int));
+                    dtTinTucDm.Columns.Add("IdDMTinTuc", typeof(int));
 
                     progress.Message = "Đang tạo tin tức...";
 
@@ -260,40 +281,57 @@ namespace TT.Controllers
                     {
                         var news = new TinTuc
                         {
-                            TieuDe = $"Tin tức số {i + 1:D8} - {GenerateRandomTitle()}",
+                            TieuDe = $"Tin {i + 1:D8} - {GenerateRandomTitle()}",
                             TrichNgan = GenerateRandomSummary(),
                             ChiTiet = GenerateRandomContent(),
                             CreateDate = DateTime.Now.AddDays(-random.Next(365)),
                             Status = 1
                         };
-
                         newsList.Add(news);
 
                         if (newsList.Count >= batchSize)
                         {
-                            // Bulk insert tin tức
                             context.TinTuc.AddRange(newsList);
                             await context.SaveChangesAsync();
 
-                            // Lấy ID của các tin tức vừa insert
-                            var insertedNewsIds = newsList.Select(n => n.Id).ToList();
+                            foreach (var newsItem in newsList)
+                            {
+                                var dmCount = random.Next(1, 4);
+                                var selected = categoryIds.OrderBy(_ => random.Next()).Take(dmCount).ToList();
 
-                            // Tạo quan hệ tin tức - danh mục
-                            await CreateNewsCategories(context, insertedNewsIds, categoryIds, random);
+                                foreach (var dmId in selected)
+                                {
+                                    dtTinTucDm.Rows.Add(newsItem.Id, dmId);
+                                }
+                            }
+
+                            await BulkInsertNewsCategories(connection, dtTinTucDm);
+                            await BulkUpdateCategoryCountAsync(connection, dtTinTucDm);
 
                             progress.ProcessedItems += newsList.Count;
                             newsList.Clear();
+                            dtTinTucDm.Rows.Clear();
                         }
                     }
 
-                    // Xử lý batch cuối cùng
                     if (newsList.Any())
                     {
                         context.TinTuc.AddRange(newsList);
                         await context.SaveChangesAsync();
 
-                        var insertedNewsIds = newsList.Select(n => n.Id).ToList();
-                        await CreateNewsCategories(context, insertedNewsIds, categoryIds, random);
+                        foreach (var newsItem in newsList)
+                        {
+                            var dmCount = random.Next(1, 4);
+                            var selected = categoryIds.OrderBy(_ => random.Next()).Take(dmCount).ToList();
+
+                            foreach (var dmId in selected)
+                            {
+                                dtTinTucDm.Rows.Add(newsItem.Id, dmId);
+                            }
+                        }
+
+                        await BulkInsertNewsCategories(connection, dtTinTucDm);
+                        await BulkUpdateCategoryCountAsync(connection, dtTinTucDm);
 
                         progress.ProcessedItems += newsList.Count;
                     }
@@ -302,12 +340,140 @@ namespace TT.Controllers
                     progress.Message = $"Hoàn thành! Đã tạo {progress.ProcessedItems} tin tức.";
                 }
             }
+            catch (DbUpdateException ex)
+            {
+                progress.Message = $"❌ Lỗi DB: {ex.InnerException?.InnerException?.Message}";
+                progress.IsCompleted = true;
+            }
             catch (Exception ex)
             {
                 progress.Message = $"Lỗi: {ex.Message}";
                 progress.IsCompleted = true;
             }
         }
+        private async Task BulkInsertNewsCategories(SqlConnection connection, DataTable dtTinTucDm)
+        {
+            using (var bulkCopy = new SqlBulkCopy(connection))
+            {
+                bulkCopy.DestinationTableName = "TinTuc_DM";
+                bulkCopy.ColumnMappings.Add("IdTinTuc", "IdTinTuc");
+                bulkCopy.ColumnMappings.Add("IdDMTinTuc", "IdDMTinTuc");
+
+                await bulkCopy.WriteToServerAsync(dtTinTucDm);
+            }
+        }
+        private async Task BulkUpdateCategoryCountAsync(SqlConnection connection, DataTable dtTinTucDm)
+        {
+            // Tạo bảng tạm #TmpDM
+            await new SqlCommand(@"IF OBJECT_ID('tempdb..#TmpDM') IS NOT NULL DROP TABLE #TmpDM;
+                                        CREATE TABLE #TmpDM (Id INT);
+                                    ", connection).ExecuteNonQueryAsync();
+
+            // Lọc ra các IdDMTinTuc duy nhất
+            var tempTable = new DataTable();
+            tempTable.Columns.Add("Id", typeof(int));
+
+            var uniqueIds = dtTinTucDm.AsEnumerable()
+                                      .Select(r => r.Field<int>("IdDMTinTuc"))
+                                      .Distinct();
+
+            foreach (var id in uniqueIds)
+            {
+                tempTable.Rows.Add(id);
+            }
+            // Bulk copy vào #TmpDM
+            using (var bulk = new SqlBulkCopy(connection))
+            {
+                bulk.DestinationTableName = "#TmpDM";
+                bulk.ColumnMappings.Add("Id", "Id");
+                await bulk.WriteToServerAsync(tempTable);
+            }
+
+        }
+        //private async Task GenerateNewsAsync(int count, string sessionId)
+        //{
+        //    const int batchSize = 5000; // Batch lớn hơn cho tin tức
+        //    var progress = _progressTracker[sessionId];
+
+        //    try
+        //    {
+        //        using (var context = new DBContext())
+        //        {
+        //            // Tắt AutoDetectChanges để tăng hiệu suất
+        //            context.Configuration.AutoDetectChangesEnabled = false;
+        //            context.Configuration.ValidateOnSaveEnabled = false;
+
+        //            // Lấy danh sách ID danh mục có sẵn
+        //            progress.Message = "Đang tải danh sách danh mục...";
+        //            var categoryIds = await context.DMTinTuc
+        //                .Select(x => x.Id)
+        //                .ToListAsync();
+
+        //            if (!categoryIds.Any())
+        //            {
+        //                progress.Message = "Không có danh mục nào để gán cho tin tức!";
+        //                progress.IsCompleted = true;
+        //                return;
+        //            }
+
+        //            var random = new Random();
+        //            var newsList = new List<TinTuc>();
+        //            var newsCategories = new List<string>(); // Để bulk insert vào bảng nhiều-nhiều
+
+        //            progress.Message = "Đang tạo tin tức...";
+
+        //            for (int i = 0; i < count; i++)
+        //            {
+        //                var news = new TinTuc
+        //                {
+        //                    TieuDe = $"Tin tức số {i + 1:D8} - {GenerateRandomTitle()}",
+        //                    TrichNgan = GenerateRandomSummary(),
+        //                    ChiTiet = GenerateRandomContent(),
+        //                    CreateDate = DateTime.Now.AddDays(-random.Next(365)),
+        //                    Status = 1
+        //                };
+
+        //                newsList.Add(news);
+
+        //                if (newsList.Count >= batchSize)
+        //                {
+        //                    // Bulk insert tin tức
+        //                    context.TinTuc.AddRange(newsList);
+        //                    await context.SaveChangesAsync();
+
+        //                    // Lấy ID của các tin tức vừa insert
+        //                    var insertedNewsIds = newsList.Select(n => n.Id).ToList();
+
+        //                    // Tạo quan hệ tin tức - danh mục
+        //                    await CreateNewsCategories(context, insertedNewsIds, categoryIds, random);
+
+        //                    progress.ProcessedItems += newsList.Count;
+        //                    newsList.Clear();
+        //                }
+        //            }
+
+        //            // Xử lý batch cuối cùng
+        //            if (newsList.Any())
+        //            {
+        //                context.TinTuc.AddRange(newsList);
+        //                await context.SaveChangesAsync();
+
+        //                var insertedNewsIds = newsList.Select(n => n.Id).ToList();
+        //                await CreateNewsCategories(context, insertedNewsIds, categoryIds, random);
+
+        //                progress.ProcessedItems += newsList.Count;
+        //            }
+
+        //            progress.IsCompleted = true;
+        //            progress.Message = $"Hoàn thành! Đã tạo {progress.ProcessedItems} tin tức.";
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        progress.Message = $"Lỗi: {ex.Message}";
+        //        progress.IsCompleted = true;
+        //    }
+        //}
 
         private async Task CreateNewsCategories(DBContext context, List<int> newsIds, List<int> categoryIds, Random random)
         {
@@ -323,6 +489,18 @@ namespace TT.Controllers
                 foreach (var categoryId in selectedCategories)
                 {
                     values.Add($"({newsId}, {categoryId})");
+                }
+                var dmList = context.DMTinTuc.Where(x => categoryIds.Contains(x.Id)).OrderByDescending(x => x.Cap).ToList();
+                for (var i = 0; i < dmList.Count; i++)
+                {
+                    if (i > 0 && (dmList[i].IdCap1 == dmList[i - 1].IdCap1 || dmList[i].Id == dmList[i - 1].IdCap1))
+                    {
+
+                    }
+                    else
+                    {
+                        context.Database.ExecuteSqlCommand("exec TangSoLuongTinTucInDm @id", new SqlParameter("@id", dmList[i].Id));
+                    }
                 }
             }
 

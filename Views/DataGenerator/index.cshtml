@@ -1,0 +1,131 @@
+﻿@{ 
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Generator - Tạo Dữ Liệu Tự Động</title>
+    <link href="~/App/css/DataGen.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Data Generator</h1>
+            <p>Công cụ tạo dữ liệu tự động cho hệ thống tin tức</p>
+        </div>
+        <div class="position-fixed bottom-0 end-0 p-3">
+            <a class="btn btn-info btn-outline-primary" href="/">Go to home</a>
+        </div>
+        <div class="content">
+            <div class="alert alert-info">
+                <strong>💡 Lưu ý:</strong> Hệ thống đã được tối ưu để xử lý hàng trăm nghìn danh mục và hàng triệu tin tức.
+                Quá trình tạo dữ liệu sẽ chạy trong background và hiển thị tiến trình real-time.
+            </div>
+
+            <!-- Category Generator -->
+            <div class="generator-section">
+                <h2 class="section-title">
+                    <span class="section-icon">📁</span>
+                    Tạo Danh Mục Tin Tức
+                </h2>
+
+                <div class="form-group">
+                    <label for="categoryCount">Số lượng danh mục cần tạo:</label>
+                    <div class="form-row">
+                        <input type="number" id="categoryCount" min="1" max="1000000" value="10000"
+                               placeholder="Nhập số lượng danh mục (tối đa 1,000,000)">
+                        <button class="btn" onclick="generateCategories()" id="btnGenerateCategories">
+                            Tạo Danh Mục
+                        </button>
+                    </div>
+                </div>
+
+                <div class="alert alert-warning">
+                    <strong>⚠️ Cấu trúc:</strong> Hệ thống sẽ tạo ~10% danh mục cấp 1 và phần còn lại là danh mục con.
+                </div>
+            </div>
+
+            <!-- News Generator -->
+            <div class="generator-section">
+                <h2 class="section-title">
+                    <span class="section-icon">📰</span>
+                    Tạo Tin Tức
+                </h2>
+
+                <div class="form-group">
+                    <label for="newsCount">Số lượng tin tức cần tạo:</label>
+                    <div class="form-row">
+                        <input type="number" id="newsCount" min="1" max="100000000" value="100000"
+                               placeholder="Nhập số lượng tin tức (tối đa 100,000,000)">
+                        <button class="btn" onclick="generateNews()" id="btnGenerateNews">
+                            Tạo Tin Tức
+                        </button>
+                    </div>
+                </div>
+
+                <div class="alert alert-warning">
+                    <strong>⚠️ Quan hệ:</strong> Mỗi tin tức sẽ được gán ngẫu nhiên từ 1-3 danh mục từ danh sách có sẵn.
+                </div>
+            </div>
+
+            <!-- Progress Container -->
+            <div class="progress-container" id="progressContainer">
+                <div class="progress-header">
+                    <div class="progress-title" id="progressTitle">Đang xử lý...</div>
+                    <div class="progress-status status-running" id="progressStatus">ĐANG CHẠY</div>
+                </div>
+
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+                </div>
+
+                <div class="progress-text" id="progressText">0%</div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="statProcessed">0</div>
+                        <div class="stat-label">Đã xử lý</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statTotal">0</div>
+                        <div class="stat-label">Tổng cộng</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statSpeed">0</div>
+                        <div class="stat-label">Items/giây</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statElapsed">00:00:00</div>
+                        <div class="stat-label">Thời gian đã trôi</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statRemaining">00:00:00</div>
+                        <div class="stat-label">Thời gian còn lại</div>
+                    </div>
+                </div>
+
+                <div class="log-container" id="logContainer">
+                    <div class="log-entry">
+                        <span class="log-time">[INFO]</span>
+                        <span>Sẵn sàng để bắt đầu...</span>
+                    </div>
+                </div>
+
+                <div class="btn-group" style="margin-top: 20px;">
+                    <button class="btn btn-danger" onclick="stopGeneration()" id="btnStop">
+                        Dừng Lại
+                    </button>
+                    <button class="btn" onclick="clearProgress()" id="btnClear">
+                        Xóa Tiến Trình
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/App/AppJs/DataGen.js"></script>
+</body>
+</html>

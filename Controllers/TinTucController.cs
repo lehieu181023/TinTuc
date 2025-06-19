@@ -194,18 +194,6 @@ namespace TT.Controllers
                     tinTuc.CreateDate = DateTime.Now;
                     _context.TinTuc.Add(tinTuc);
                     await _context.SaveChangesAsync();
-                    dmList = dmList.OrderByDescending(x => x.Cap).ToList();
-                    for (var i = 0; i < dmList.Count;i++)
-                    {   
-                        if(i > 0 && (dmList[i].IdCap1 == dmList[i - 1].IdCap1 || dmList[i].Id == dmList[i - 1].IdCap1))
-                        {
-                            
-                        }
-                        else
-                        {
-                            _context.Database.ExecuteSqlCommand("exec TangSoLuongTinTucInDm @id", new SqlParameter("@id", dmList[i].Id));
-                        }      
-                    }
                     transaction.Commit();
                     return Json(new { success = true, message = "Thêm mới thành công" }, JsonRequestBehavior.AllowGet);
                 }
@@ -268,7 +256,7 @@ namespace TT.Controllers
                     foreach (var dm in toRemove)
                     {
                         existing.DMTinTuc.Remove(dm);
-                        _context.Database.ExecuteSqlCommand("exec GiamSoLuongTinTucInDm @id", new SqlParameter("@id", dm.Id));
+
 
                     }
                     var toAddIds = lstIdDM.Except(currentIds).ToList();
@@ -280,7 +268,7 @@ namespace TT.Controllers
                         foreach (var dm in toAdd)
                         {
                             existing.DMTinTuc.Add(dm);
-                            _context.Database.ExecuteSqlCommand("exec TangSoLuongTinTucInDm @id", new SqlParameter("@id", dm.Id));
+                            
                         }
 
                     }
@@ -312,10 +300,6 @@ namespace TT.Controllers
             try
             {
                 await _context.SaveChangesAsync();
-                foreach (var dm in tinTuc.DMTinTuc)
-                {
-                    _context.Database.ExecuteSqlCommand("exec GiamSoLuongTinTucInDm @id", new SqlParameter("@id", dm.Id));
-                }
                 return Json(new { success = true, message = "Xóa thành công" }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)

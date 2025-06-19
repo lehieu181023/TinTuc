@@ -1,4 +1,6 @@
 ﻿
+using Microsoft.Ajax.Utilities;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -76,7 +78,7 @@ namespace TT.Controllers
 
             return PartialView(list);
         }
-        public ActionResult ListDm(string keysearch,int indexdm = 0)
+        public async Task<ActionResult> ListDm(string keysearch,int indexdm = 0)
         {
             var DMTT = _context.DMTinTuc.AsQueryable().AsNoTracking();
             List<DMTinTuc> listdata = null;
@@ -91,10 +93,11 @@ namespace TT.Controllers
                 {
                     DMTT = DMTT.Where(x => x.Cap == 1);
                 }
-                listdata = DMTT.OrderBy(x => x.Cap).Skip(indexdm).Take(50).ToList();
+                listdata = await DMTT.OrderBy(x => x.Cap).Skip(indexdm).Take(50).ToListAsync();
 
                 foreach (var item in listdata)
                 {
+                    // Kiểm tra xem có danh mục con không (bất kỳ cấp con nào trỏ về Id hiện tại)
                     item.CountChild = _context.DMTinTuc.Any(dm =>
                         dm.IdCap1 == item.Id ||
                         dm.IdCap2 == item.Id ||
@@ -104,7 +107,14 @@ namespace TT.Controllers
                         dm.IdCap6 == item.Id ||
                         dm.IdCap7 == item.Id
                     ) ? 1 : 0;
+                    var query= _context.TinTuc
+                    .Include(x => x.DMTinTuc)
+                    .AsNoTracking()
+                    .Where(t => t.DMTinTuc.Any(d => d.Id == item.Id || d.IdCap1 == item.Id || d.IdCap2 == item.Id || d.IdCap3 == item.Id || d.IdCap4 == item.Id || d.IdCap5 == item.Id || d.IdCap6 == item.Id || d.IdCap7 == item.Id));
+
+                    item.SoLuongTinTuc = await query.CountAsync();
                 }
+
             }
             catch (Exception ex)
             {
@@ -113,7 +123,7 @@ namespace TT.Controllers
             return PartialView(listdata);
         }
 
-        public ActionResult ListDmChild(int IdDm = 0)
+        public async Task<ActionResult> ListDmChild(int IdDm = 0)
         {
             // 1. Lấy danh sách danh mục con
             var listdm = _context.DMTinTuc
@@ -133,6 +143,13 @@ namespace TT.Controllers
                 );
 
                 item.CountChild = coConChau ? 1 : 0;
+
+                var query = _context.TinTuc
+                    .Include(x => x.DMTinTuc)
+                    .AsNoTracking()
+                    .Where(t => t.DMTinTuc.Any(d => d.Id == item.Id || d.IdCap1 == item.Id || d.IdCap2 == item.Id || d.IdCap3 == item.Id || d.IdCap4 == item.Id || d.IdCap5 == item.Id || d.IdCap6 == item.Id || d.IdCap7 == item.Id));
+
+                item.SoLuongTinTuc = await query.CountAsync();
             }
 
             return PartialView("~/Views/Home/ListDm.cshtml", listdm); // ✔ dùng đúng listdm

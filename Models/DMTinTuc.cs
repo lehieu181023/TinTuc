@@ -34,7 +34,7 @@ namespace TT.Models
         public Nullable<int> IdCap5 { get; set; }
         public Nullable<int> IdCap6 { get; set; }
         public Nullable<int> IdCap7 { get; set; }
-        public Nullable<int> SoLuongTinTuc { get; set; }
+        public int SoLuongTinTuc { get; set; } = 0;
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TinTuc> TinTuc { get; set; }

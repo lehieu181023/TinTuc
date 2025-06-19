@@ -167,6 +167,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App\AppJs\DataGen.js" />
     <Content Include="App\AppJs\DmtinTuc.js" />
     <Content Include="App\AppJs\Home.js" />
     <Content Include="App\AppJs\TinTuc.js" />
@@ -472,6 +473,7 @@
     <Content Include="App\assets\vendor\tinymce\themes\silver\theme.min.js" />
     <Content Include="App\assets\vendor\tinymce\tinymce.js" />
     <Content Include="App\assets\vendor\tinymce\tinymce.min.js" />
+    <Content Include="App\css\DataGen.css" />
     <Content Include="App\css\HomeTinTuc.css" />
     <Content Include="App\css\site.css" />
     <Content Include="App\css\test.css" />
@@ -729,6 +731,7 @@
     <Content Include="Views\TinTuc\Index.cshtml" />
     <Content Include="Views\TinTuc\Listdata.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\DataGenerator\index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
